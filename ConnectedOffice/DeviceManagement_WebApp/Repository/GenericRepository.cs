@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
+using System.Threading.Tasks;
 
 namespace DeviceManagement_WebApp.Repository
 {
@@ -35,7 +36,7 @@ namespace DeviceManagement_WebApp.Repository
             return _context.Set<T>().ToList();
         }
         
-        public T GetById(int id)
+        public T GetById(Guid id)
         {
             return _context.Set<T>().Find(id);
         }
@@ -48,6 +49,26 @@ namespace DeviceManagement_WebApp.Repository
         public void RemoveRange(IEnumerable<T> entities)
         {
             _context.Set<T>().RemoveRange(entities);
+        }
+
+        public void saveAs()
+        {
+            _context.SaveChangesAsync();
+        }
+
+        public void Update(T item)
+        {
+            _context.Update(item);
+        }
+
+        public void SaveChange()
+        {
+            _context.SaveChangesAsync();
+        }
+
+        public bool Find(Guid id)
+        {
+            return GetById(id) != null;
         }
 
     }

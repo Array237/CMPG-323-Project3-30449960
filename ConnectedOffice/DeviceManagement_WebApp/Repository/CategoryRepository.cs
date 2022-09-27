@@ -3,12 +3,13 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using DeviceManagement_WebApp.Models;
 using System.Linq;
+using System;
 
 namespace DeviceManagement_WebApp.Repository
 {
-    public class CategoriesRepository : GenericRepository<Category>, ICategoryRepository
+    public class CategoryRepository : GenericRepository<Category>, ICategoryRepository
     {
-        public CategoriesRepository(ConnectedOfficeContext context) : base(context)
+        public CategoryRepository(ConnectedOfficeContext context) : base(context)
         {
         }
 
