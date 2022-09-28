@@ -13,19 +13,18 @@ namespace DeviceManagement_WebApp.Controllers
 {
     public class CategoriesController : Controller
     {
-        //private readonly ConnectedOfficeContext _context;
-        private readonly ICategoryRepository categoriesRepo;
+        private readonly ICategoryRepository _categoriesRepo;
 
-        public CategoriesController(ConnectedOfficeContext context)
+        public CategoriesController(ConnectedOfficeContext context, ICategoryRepository categoriesRepo)
         {
-            //_context = context;
-            categoriesRepo = new CategoryRepository(context);
+            //categoriesRepo = new CategoryRepository(context);
+            _categoriesRepo = categoriesRepo;
         }
 
         // GET: Categories
         public async Task<IActionResult> Index()
         {
-            var categories = categoriesRepo.GetAll();
+            var categories = _categoriesRepo.GetAll();
             return View(categories);
         }
 
@@ -37,8 +36,7 @@ namespace DeviceManagement_WebApp.Controllers
                 return NotFound();
             }
 
-            //var category = await _context.Category.FirstOrDefaultAsync(m => m.CategoryId == id);
-            var category = categoriesRepo.GetById((Guid)id);
+            var category = _categoriesRepo.GetById((Guid)id);
             if (category == null)
             {
                 return NotFound();
@@ -61,8 +59,8 @@ namespace DeviceManagement_WebApp.Controllers
         public async Task<IActionResult> Create([Bind("CategoryId,CategoryName,CategoryDescription,DateCreated")] Category category)
         {
             category.CategoryId = Guid.NewGuid();
-            categoriesRepo.Add(category);
-            categoriesRepo.saveAs();
+            _categoriesRepo.Add(category);
+            _categoriesRepo.saveAs();
             return RedirectToAction(nameof(Index));
         }
 
@@ -74,9 +72,7 @@ namespace DeviceManagement_WebApp.Controllers
                 return NotFound();
             }
 
-            //var category = await _context.Category.FindAsync(id);
-
-            var category = await categoriesRepo.findAs((Guid)id);
+            var category = await _categoriesRepo.findAs((Guid)id);
             if (category == null)
             {
                 return NotFound();
@@ -97,8 +93,8 @@ namespace DeviceManagement_WebApp.Controllers
             }
             try
             {
-                categoriesRepo.Update(category);
-                categoriesRepo.saveAs();
+                _categoriesRepo.Update(category);
+                _categoriesRepo.saveAs();
             }
             catch (DbUpdateConcurrencyException)
             {
@@ -122,8 +118,7 @@ namespace DeviceManagement_WebApp.Controllers
                 return NotFound();
             }
 
-            //var category = await _context.Category.FirstOrDefaultAsync(m => m.CategoryId == id);
-            var category = categoriesRepo.GetById((Guid)id);
+            var category = _categoriesRepo.GetById((Guid)id);
             if (category == null)
             {
                 return NotFound();
@@ -137,16 +132,15 @@ namespace DeviceManagement_WebApp.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(Guid id)
         {
-            //var category = await _context.Category.FindAsync(id);
-            var category = categoriesRepo.GetById((Guid)id);
-            categoriesRepo.Remove(category);
-            categoriesRepo.saveAs();
+            var category = _categoriesRepo.GetById((Guid)id);
+            _categoriesRepo.Remove(category);
+            _categoriesRepo.saveAs();
             return RedirectToAction(nameof(Index));
         }
 
         private bool CategoryExists(Guid id)
         {
-            return categoriesRepo.Find(id);
+            return _categoriesRepo.Find(id);
         }
     }
 }
