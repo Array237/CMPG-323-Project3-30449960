@@ -76,7 +76,7 @@ namespace DeviceManagement_WebApp.Controllers
 
             //var category = await _context.Category.FindAsync(id);
 
-            var category = categoriesRepo.GetById((Guid)id);
+            var category = await categoriesRepo.findAs((Guid)id);
             if (category == null)
             {
                 return NotFound();
