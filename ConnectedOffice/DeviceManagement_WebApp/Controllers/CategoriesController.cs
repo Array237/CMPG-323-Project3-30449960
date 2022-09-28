@@ -15,17 +15,15 @@ namespace DeviceManagement_WebApp.Controllers
     {
         private readonly ICategoryRepository _categoriesRepo;
 
-        public CategoriesController(ConnectedOfficeContext context, ICategoryRepository categoriesRepo)
+        public CategoriesController(ICategoryRepository categoriesRepo)
         {
-            //categoriesRepo = new CategoryRepository(context);
             _categoriesRepo = categoriesRepo;
         }
 
         // GET: Categories
         public async Task<IActionResult> Index()
         {
-            var categories = _categoriesRepo.GetAll();
-            return View(categories);
+            return View(await _categoriesRepo.ToList());
         }
 
         // GET: Categories/Details/5
@@ -36,7 +34,7 @@ namespace DeviceManagement_WebApp.Controllers
                 return NotFound();
             }
 
-            var category = _categoriesRepo.GetById((Guid)id);
+            var category = _categoriesRepo.FirstOrDef((Guid)id);
             if (category == null)
             {
                 return NotFound();
@@ -60,7 +58,7 @@ namespace DeviceManagement_WebApp.Controllers
         {
             category.CategoryId = Guid.NewGuid();
             _categoriesRepo.Add(category);
-            _categoriesRepo.saveAs();
+            await _categoriesRepo.saveAs();
             return RedirectToAction(nameof(Index));
         }
 
@@ -94,7 +92,7 @@ namespace DeviceManagement_WebApp.Controllers
             try
             {
                 _categoriesRepo.Update(category);
-                _categoriesRepo.saveAs();
+                await _categoriesRepo.saveAs();
             }
             catch (DbUpdateConcurrencyException)
             {
@@ -118,7 +116,8 @@ namespace DeviceManagement_WebApp.Controllers
                 return NotFound();
             }
 
-            var category = _categoriesRepo.GetById((Guid)id);
+            //var category = _categoriesRepo.GetById((Guid)id);
+            var category = await _categoriesRepo.FirstOrDef((Guid) id);
             if (category == null)
             {
                 return NotFound();
@@ -134,7 +133,7 @@ namespace DeviceManagement_WebApp.Controllers
         {
             var category = _categoriesRepo.GetById((Guid)id);
             _categoriesRepo.Remove(category);
-            _categoriesRepo.saveAs();
+            await _categoriesRepo.saveAs();
             return RedirectToAction(nameof(Index));
         }
 
