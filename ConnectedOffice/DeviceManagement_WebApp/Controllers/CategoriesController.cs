@@ -13,11 +13,12 @@ namespace DeviceManagement_WebApp.Controllers
 {
     public class CategoriesController : Controller
     {
-        private readonly ConnectedOfficeContext _context;
+        //private readonly ConnectedOfficeContext _context;
         private readonly ICategoryRepository categoriesRepo;
 
         public CategoriesController(ConnectedOfficeContext context)
         {
+            //_context = context;
             categoriesRepo = new CategoryRepository(context);
         }
 
@@ -37,11 +38,6 @@ namespace DeviceManagement_WebApp.Controllers
             }
 
             //var category = await _context.Category.FirstOrDefaultAsync(m => m.CategoryId == id);
-            //if (category == null)
-            //{
-            //    return NotFound();
-            //}
-
             var category = categoriesRepo.GetById((Guid)id);
             if (category == null)
             {
@@ -144,7 +140,7 @@ namespace DeviceManagement_WebApp.Controllers
             //var category = await _context.Category.FindAsync(id);
             var category = categoriesRepo.GetById((Guid)id);
             categoriesRepo.Remove(category);
-            categoriesRepo.SaveChange();
+            categoriesRepo.saveAs();
             return RedirectToAction(nameof(Index));
         }
 

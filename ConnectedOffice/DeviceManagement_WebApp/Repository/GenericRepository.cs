@@ -1,4 +1,5 @@
 ﻿using DeviceManagement_WebApp.Data;
+using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -61,14 +62,14 @@ namespace DeviceManagement_WebApp.Repository
             _context.Update(item);
         }
 
-        public void SaveChange()
-        {
-            _context.SaveChangesAsync();
-        }
-
         public bool Find(Guid id)
         {
             return GetById(id) != null;
+        }
+
+        public async Task<T> findAs(Guid id)
+        {
+            return await _context.Set<T>().FindAsync(id);
         }
 
     }
