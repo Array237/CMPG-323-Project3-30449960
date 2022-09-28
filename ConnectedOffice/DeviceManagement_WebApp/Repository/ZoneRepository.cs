@@ -1,5 +1,8 @@
 ﻿using DeviceManagement_WebApp.Data;
 using DeviceManagement_WebApp.Models;
+using Microsoft.EntityFrameworkCore;
+using System;
+using System.Threading.Tasks;
 
 namespace DeviceManagement_WebApp.Repository
 {
@@ -9,7 +12,10 @@ namespace DeviceManagement_WebApp.Repository
         {
         }
 
-
+        public async Task<Zone> FirstOrDef(Guid id)
+        {
+            return await _context.Zone.FirstOrDefaultAsync(m => m.ZoneId == id);
+        }
 
     }
 }

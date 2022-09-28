@@ -15,9 +15,10 @@ namespace DeviceManagement_WebApp.Repository
         void AddRange(IEnumerable<T> entities);
         void Remove(T entity);
         void RemoveRange(IEnumerable<T> entities);
-        void saveAs();
+        Task<int> saveAs();
         void Update(T item);
         bool Find(Guid id);
         Task<T> findAs(Guid id);
+        public Task<List<T>> ToList();
     }
 }

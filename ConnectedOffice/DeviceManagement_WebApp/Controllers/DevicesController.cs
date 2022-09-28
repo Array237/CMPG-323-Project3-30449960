@@ -13,21 +13,21 @@ namespace DeviceManagement_WebApp.Controllers
 {
     public class DevicesController : Controller
     {
-        private readonly IDeviceRepository deviceRepo;
-        private readonly ICategoryRepository categoryRepo;
-        private readonly IZoneRepository zoneRepo;
+        private readonly IDeviceRepository _deviceRepo;
+        private readonly ICategoryRepository _categoryRepo;
+        private readonly IZoneRepository _zoneRepo;
 
-        public DevicesController(ConnectedOfficeContext context)
+        public DevicesController(IDeviceRepository deviceRepo, ICategoryRepository categoryRepo, IZoneRepository zoneRepo)
         {
-            deviceRepo = new DeviceRepository(context);
-            categoryRepo = new CategoryRepository(context);
-            zoneRepo = new ZoneRepository(context);
+            _deviceRepo = deviceRepo;
+            _categoryRepo = categoryRepo;
+            _zoneRepo = zoneRepo;
         }
 
         // GET: Devices
         public async Task<IActionResult> Index()
         {
-            var connectedOfficeContext = deviceRepo.IncludeDevice();
+            var connectedOfficeContext = _deviceRepo.IncludeDevice();
             return View(await connectedOfficeContext.ToListAsync());
         }
 
@@ -39,7 +39,7 @@ namespace DeviceManagement_WebApp.Controllers
                 return NotFound();
             }
 
-            var device = await deviceRepo.DeviceDetails((Guid)id);
+            var device = await _deviceRepo.DeviceDetails((Guid)id);
             if (device == null)
             {
                 return NotFound();
@@ -51,8 +51,8 @@ namespace DeviceManagement_WebApp.Controllers
         // GET: Devices/Create
         public IActionResult Create()
         {
-            ViewData["CategoryId"] = new SelectList(categoryRepo.GetAll(), "CategoryId", "CategoryName");
-            ViewData["ZoneId"] = new SelectList(zoneRepo.GetAll(), "ZoneId", "ZoneName");
+            ViewData["CategoryId"] = new SelectList(_categoryRepo.GetAll(), "CategoryId", "CategoryName");
+            ViewData["ZoneId"] = new SelectList(_zoneRepo.GetAll(), "ZoneId", "ZoneName");
             return View();
         }
 
@@ -64,8 +64,8 @@ namespace DeviceManagement_WebApp.Controllers
         public async Task<IActionResult> Create([Bind("DeviceId,DeviceName,CategoryId,ZoneId,Status,IsActive,DateCreated")] Device device)
         {
             device.DeviceId = Guid.NewGuid();
-            deviceRepo.Add(device);
-            deviceRepo.saveAs();
+            _deviceRepo.Add(device);
+            await _deviceRepo.saveAs();
             return RedirectToAction(nameof(Index));
 
 
@@ -79,13 +79,14 @@ namespace DeviceManagement_WebApp.Controllers
                 return NotFound();
             }
 
-            var device = deviceRepo.GetById((Guid)id);
+            //var device = deviceRepo.GetById((Guid)id);
+            var device = await _deviceRepo.findAs((Guid)id);
             if (device == null)
             {
                 return NotFound();
             }
-            ViewData["CategoryId"] = new SelectList(categoryRepo.GetAll(), "CategoryId", "CategoryName", device.CategoryId);
-            ViewData["ZoneId"] = new SelectList(zoneRepo.GetAll(), "ZoneId", "ZoneName", device.ZoneId);
+            ViewData["CategoryId"] = new SelectList(_categoryRepo.GetAll(), "CategoryId", "CategoryName", device.CategoryId);
+            ViewData["ZoneId"] = new SelectList(_zoneRepo.GetAll(), "ZoneId", "ZoneName", device.ZoneId);
             return View(device);
         }
 
@@ -102,8 +103,8 @@ namespace DeviceManagement_WebApp.Controllers
             }
             try
             {
-                deviceRepo.Update(device);
-                deviceRepo.saveAs();
+                _deviceRepo.Update(device);
+                await _deviceRepo.saveAs();
             }
             catch (DbUpdateConcurrencyException)
             {
@@ -128,7 +129,7 @@ namespace DeviceManagement_WebApp.Controllers
                 return NotFound();
             }
 
-            var device = await deviceRepo.DeviceDetails((Guid)id);
+            var device = await _deviceRepo.DeviceDetails((Guid)id);
             if (device == null)
             {
                 return NotFound();
@@ -142,15 +143,15 @@ namespace DeviceManagement_WebApp.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(Guid id)
         {
-            var device = await deviceRepo.findAs(id);
-            deviceRepo.Remove(device);
-            deviceRepo.saveAs();
+            var device = await _deviceRepo.findAs(id);
+            _deviceRepo.Remove(device);
+            await _deviceRepo.saveAs();
             return RedirectToAction(nameof(Index));
         }
 
         private bool DeviceExists(Guid id)
         {
-            return zoneRepo.Find(id);
+            return _zoneRepo.Find(id);
         }
     }
 }

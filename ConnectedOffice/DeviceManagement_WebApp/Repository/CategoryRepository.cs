@@ -4,6 +4,7 @@ using System.Threading.Tasks;
 using DeviceManagement_WebApp.Models;
 using System.Linq;
 using System;
+using Microsoft.EntityFrameworkCore;
 
 namespace DeviceManagement_WebApp.Repository
 {
@@ -11,6 +12,11 @@ namespace DeviceManagement_WebApp.Repository
     {
         public CategoryRepository(ConnectedOfficeContext context) : base(context)
         {
+        }
+
+        public async Task<Category> FirstOrDef(Guid id)
+        {
+            return await _context.Category.FirstOrDefaultAsync(m => m.CategoryId == id);
         }
 
     }

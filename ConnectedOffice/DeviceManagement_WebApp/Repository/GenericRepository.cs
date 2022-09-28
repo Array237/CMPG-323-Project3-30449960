@@ -1,5 +1,6 @@
 ﻿using DeviceManagement_WebApp.Data;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -52,9 +53,9 @@ namespace DeviceManagement_WebApp.Repository
             _context.Set<T>().RemoveRange(entities);
         }
 
-        public void saveAs()
+        public async Task<int> saveAs()
         {
-            _context.SaveChangesAsync();
+            return await _context.SaveChangesAsync();
         }
 
         public void Update(T item)
@@ -70,6 +71,11 @@ namespace DeviceManagement_WebApp.Repository
         public async Task<T> findAs(Guid id)
         {
             return await _context.Set<T>().FindAsync(id);
+        }
+
+        public async Task<List<T>> ToList()
+        {
+            return await _context.Set<T>().ToListAsync();
         }
 
     }

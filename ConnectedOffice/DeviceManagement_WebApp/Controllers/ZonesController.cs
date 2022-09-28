@@ -13,17 +13,17 @@ namespace DeviceManagement_WebApp.Controllers
 {
     public class ZonesController : Controller
     {
-        private readonly IZoneRepository zoneRepo;
+        private readonly IZoneRepository _zoneRepo;
 
-        public ZonesController(ConnectedOfficeContext context)
+        public ZonesController(IZoneRepository zoneRepo)
         {
-            zoneRepo = new ZoneRepository(context);
+            _zoneRepo = zoneRepo;
         }
 
         // GET: Zones
         public async Task<IActionResult> Index()
         {
-            return View(zoneRepo.GetAll());
+            return View(await _zoneRepo.ToList());
         }
 
         // GET: Zones/Details/5
@@ -34,7 +34,7 @@ namespace DeviceManagement_WebApp.Controllers
                 return NotFound();
             }
 
-            var zone = zoneRepo.GetById((Guid)id);
+            var zone = await _zoneRepo.FirstOrDef((Guid)id);
             if (zone == null)
             {
                 return NotFound();
@@ -57,8 +57,8 @@ namespace DeviceManagement_WebApp.Controllers
         public async Task<IActionResult> Create([Bind("ZoneId,ZoneName,ZoneDescription,DateCreated")] Zone zone)
         {
             zone.ZoneId = Guid.NewGuid();
-            zoneRepo.Add(zone);
-            zoneRepo.saveAs();
+            _zoneRepo.Add(zone);
+            await _zoneRepo.saveAs();
 
             return RedirectToAction(nameof(Index));
         }
@@ -71,7 +71,7 @@ namespace DeviceManagement_WebApp.Controllers
                 return NotFound();
             }
 
-            var zone = await zoneRepo.findAs((Guid)id);
+            var zone = await _zoneRepo.findAs((Guid)id);
             if (zone == null)
             {
                 return NotFound();
@@ -93,8 +93,8 @@ namespace DeviceManagement_WebApp.Controllers
 
             try
             {
-                zoneRepo.Update(zone);
-                zoneRepo.saveAs();
+                _zoneRepo.Update(zone);
+                await _zoneRepo.saveAs();
             }
             catch (DbUpdateConcurrencyException)
             {
@@ -119,7 +119,7 @@ namespace DeviceManagement_WebApp.Controllers
                 return NotFound();
             }
 
-            var zone = zoneRepo.GetById((Guid)id);
+            var zone = await _zoneRepo.FirstOrDef((Guid)id);
             if (zone == null)
             {
                 return NotFound();
@@ -133,15 +133,15 @@ namespace DeviceManagement_WebApp.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(Guid id)
         {
-            var zone = await zoneRepo.findAs(id);
-            zoneRepo.Remove(zone);
-            zoneRepo.saveAs();
+            var zone = await _zoneRepo.findAs(id);
+            _zoneRepo.Remove(zone);
+            await _zoneRepo.saveAs();
             return RedirectToAction(nameof(Index));
         }
 
         private bool ZoneExists(Guid id)
         {
-            return zoneRepo.Find(id);
+            return _zoneRepo.Find(id);
         }
     }
 }
