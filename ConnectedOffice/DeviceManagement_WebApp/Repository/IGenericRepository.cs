@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace DeviceManagement_WebApp.Repository
 {   
-    public interface IGenericRepository <T> where T : class
+    public interface IGenericRepository<T> where T : class
     {
         T GetById(Guid id);
         IEnumerable<T> GetAll();
@@ -17,7 +17,7 @@ namespace DeviceManagement_WebApp.Repository
         void RemoveRange(IEnumerable<T> entities);
         void saveAs();
         void Update(T item);
-        void SaveChange();
         bool Find(Guid id);
+        Task<T> findAs(Guid id);
     }
 }

@@ -14,9 +14,9 @@ namespace DeviceManagement_WebApp.Repository
         }
 
         // GET: Categories
-        public List<Category> GetAll()
-        {
-            return _context.Category.ToList();
-        }
+        //public List<Category> GetAll()
+        //{
+        //    return _context.Category.ToList();
+        //}
     }
 }
