@@ -13,13 +13,14 @@ namespace DeviceManagement_WebApp.Repository
         public DeviceRepository(ConnectedOfficeContext context) : base(context)
         {
         }
-
+        //Returns a list with two different Models
         public IIncludableQueryable<Device,Zone> IncludeDevice()
         {
             var temp = _context.Device.Include(d => d.Category).Include(d => d.Zone);
             return temp;
         }
 
+        //Returns Device details such as the category and zone
         public async Task<Device> DeviceDetails(Guid id)
         {
             var temp = await _context.Device.Include(d => d.Category).Include(d => d.Zone).FirstOrDefaultAsync(m => m.DeviceId == id);

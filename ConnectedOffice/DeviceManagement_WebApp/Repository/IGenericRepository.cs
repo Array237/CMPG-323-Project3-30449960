@@ -19,6 +19,6 @@ namespace DeviceManagement_WebApp.Repository
         void Update(T item);
         bool Find(Guid id);
         Task<T> findAs(Guid id);
-        public Task<List<T>> ToList();
+        Task<List<T>> ToList();
     }
 }

@@ -18,6 +18,7 @@ namespace DeviceManagement_WebApp.Repository
             _context = context;
         }
         
+        //Recieves a genereic datatype and adds it to corret datatype
         public void Add(T entity)
         {
             _context.Set<T>().Add(entity);
@@ -33,16 +34,19 @@ namespace DeviceManagement_WebApp.Repository
             return _context.Set<T>().Where(expression);
         }
         
+        //get all items in specific datatype and returns a list
         public IEnumerable<T> GetAll()
         {
             return _context.Set<T>().ToList();
         }
         
+        //looks for a datatype by its ID and returns it 
         public T GetById(Guid id)
         {
             return _context.Set<T>().Find(id);
         }
         
+        //Removes a specific instace of a datatype
         public void Remove(T entity)
         {
             _context.Set<T>().Remove(entity);
@@ -53,26 +57,31 @@ namespace DeviceManagement_WebApp.Repository
             _context.Set<T>().RemoveRange(entities);
         }
 
+        //Saves any changes made in context to database
         public async Task<int> saveAs()
         {
             return await _context.SaveChangesAsync();
         }
 
+        //Updates an instance of a datatype 
         public void Update(T item)
         {
             _context.Update(item);
         }
 
+        //Finds device by id
         public bool Find(Guid id)
         {
             return GetById(id) != null;
         }
 
+        //Finds and works with entity without making request to database
         public async Task<T> findAs(Guid id)
         {
             return await _context.Set<T>().FindAsync(id);
         }
 
+        //Returns a list asynchronously
         public async Task<List<T>> ToList()
         {
             return await _context.Set<T>().ToListAsync();

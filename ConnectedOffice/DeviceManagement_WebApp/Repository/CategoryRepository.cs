@@ -14,6 +14,7 @@ namespace DeviceManagement_WebApp.Repository
         {
         }
 
+        //return first or default value if no value is found
         public async Task<Category> FirstOrDef(Guid id)
         {
             return await _context.Category.FirstOrDefaultAsync(m => m.CategoryId == id);
