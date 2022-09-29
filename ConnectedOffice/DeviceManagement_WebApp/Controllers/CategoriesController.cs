@@ -1,11 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
-using DeviceManagement_WebApp.Data;
 using DeviceManagement_WebApp.Models;
 using DeviceManagement_WebApp.Repository;
 
@@ -34,7 +30,7 @@ namespace DeviceManagement_WebApp.Controllers
                 return NotFound();
             }
 
-            var category = _categoriesRepo.FirstOrDef((Guid)id);
+            var category = await _categoriesRepo.FirstOrDef((Guid)id);
             if (category == null)
             {
                 return NotFound();
@@ -131,7 +127,8 @@ namespace DeviceManagement_WebApp.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(Guid id)
         {
-            var category = _categoriesRepo.GetById((Guid)id);
+            //var category = _categoriesRepo.GetById(id);
+            var category = await _categoriesRepo.findAs(id);
             _categoriesRepo.Remove(category);
             await _categoriesRepo.saveAs();
             return RedirectToAction(nameof(Index));

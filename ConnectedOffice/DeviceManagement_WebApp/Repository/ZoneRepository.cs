@@ -12,6 +12,7 @@ namespace DeviceManagement_WebApp.Repository
         {
         }
 
+        //return first or default value if no value is found
         public async Task<Zone> FirstOrDef(Guid id)
         {
             return await _context.Zone.FirstOrDefaultAsync(m => m.ZoneId == id);
